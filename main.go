@@ -35,8 +35,8 @@ func main() {
 
 	m.Group("/token", func(r *macaron.Router) {
 		r.Get("/create", token.Create)
+		r.Get("/update", token.Update)
 		r.Get("/auth", token.Auth)
-		r.Get("/delete", token.Delete)
 	})
 
 	m.Group("/account", func(r *macaron.Router) {
@@ -45,7 +45,7 @@ func main() {
 		r.Get("/auth", account.Auth)
 		r.Get("/delete", account.Delete)
 		r.Get("/info", account.Info)
-		r.Get("/accounts", account.Accounts)
+		r.Get("/list", account.Accounts)
 	})
 
 	// m.NotFound(func(ctx *macaron.Context, logger *log.Logger) {

@@ -1,8 +1,6 @@
 package token
 
 import (
-	"github.com/Unknwon/macaron"
-	"github.com/satori/go.uuid"
 	m "github.com/weisd/goapi/models"
 	"github.com/weisd/goapi/modules/log"
 	"github.com/weisd/goapi/modules/middleware"
@@ -21,13 +19,38 @@ func Create(ctx *middleware.Context) {
 	if len(salt) == 0 {
 		salt = "ktkt"
 	}
-	// // 创建uuid
-	u1 := uuid.NewV4()
-	u5 := uuid.NewV5(u1, salt)
+	token := m.CreateToken(salt)
 
-	log.Debug("create token : %s", u5.String())
+	ctx.SuccessJSON(token)
+}
 
-	ctx.SuccessJSON(u5.String())
+/**
+ * 更新用户token
+ * @params int64 uid
+ * @params string from
+ * @return string token
+ */
+func Update(ctx *middleware.Context) {
+	uid := ctx.QueryInt64("uid")
+	from := ctx.Query("from")
+
+	if uid == 0 || len(from) == 0 {
+		ctx.ErrorJSON(401, "params error")
+		return
+	}
+
+	if _, ok := m.FromType[from]; !ok {
+		ctx.ErrorJSON(401, "from type error")
+		return
+	}
+
+	token, err := m.UpdateToken(uid, from)
+	if err != nil {
+		ctx.ErrorJSON(502, "update token failed :"+err.Error())
+		return
+	}
+
+	ctx.SuccessJSON(token)
 }
 
 // 验证token
@@ -40,6 +63,11 @@ func Auth(ctx *middleware.Context) {
 
 	if uid == 0 || len(token) == 0 || len(from) == 0 {
 		ctx.ErrorJSON(401, "params error")
+		return
+	}
+
+	if _, ok := m.FromType[from]; !ok {
+		ctx.ErrorJSON(401, "from type error")
 		return
 	}
 
@@ -56,11 +84,11 @@ func Auth(ctx *middleware.Context) {
 
 	switch from {
 	case "kt":
-		authToken = tokenInfo.KtToken
+		authToken = tokenInfo.Kt
 	case "ktkt":
-		authToken = tokenInfo.KtKtToken
+		authToken = tokenInfo.Ktkt
 	case "app":
-		authToken = tokenInfo.AppToken
+		authToken = tokenInfo.App
 	}
 
 	if authToken != token {
@@ -70,8 +98,4 @@ func Auth(ctx *middleware.Context) {
 
 	ctx.SuccessJSON("ok")
 	return
-}
-
-func Delete(ctx *macaron.Context) string {
-	return "token delete"
 }

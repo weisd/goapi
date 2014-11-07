@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode"
 
 	// "github.com/Unknwon/com"
 	// "github.com/Unknwon/i18n"
@@ -462,4 +463,14 @@ func XSS(in []byte) []byte {
 
 func XSSString(in string) string {
 	return string(XSS([]byte(in)))
+}
+
+func IsNumber(str string) bool {
+	for _, r := range str {
+		if !unicode.IsNumber(r) {
+			return false
+		}
+	}
+
+	return true
 }
