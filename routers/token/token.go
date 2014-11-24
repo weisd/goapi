@@ -6,11 +6,6 @@ import (
 	"github.com/weisd/goapi/modules/middleware"
 )
 
-type returnErr struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
-}
-
 // 创建token
 func Create(ctx *middleware.Context) {
 
@@ -97,5 +92,22 @@ func Auth(ctx *middleware.Context) {
 	}
 
 	ctx.SuccessJSON("ok")
+	return
+}
+
+func Client(ctx *middleware.Context) {
+	id := ctx.QueryInt64("id")
+	if id == 0 {
+		ctx.ErrorJSON(401, "params error")
+		return
+	}
+
+	info, err := m.GetSSOClient(id)
+	if err != nil {
+		ctx.ErrorJSON(404, "not fount")
+		return
+	}
+
+	ctx.SuccessJSON(info)
 	return
 }

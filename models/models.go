@@ -33,7 +33,7 @@ var (
 
 func init() {
 	// @todo 添加表
-	tables = append(tables, new(User), new(Tokens))
+	tables = append(tables, new(User), new(Tokens), new(SsoClinets))
 }
 
 func LoadModelsConfig() {

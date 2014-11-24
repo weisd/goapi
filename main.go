@@ -5,6 +5,7 @@ import (
 	"github.com/weisd/goapi/modules/middleware"
 	"github.com/weisd/goapi/routers"
 	"github.com/weisd/goapi/routers/account"
+	"github.com/weisd/goapi/routers/sso"
 	"github.com/weisd/goapi/routers/token"
 	// "net/http"
 	"log"
@@ -33,19 +34,29 @@ func main() {
 		return "wellcome to goapi v1 !"
 	})
 
-	m.Group("/token", func(r *macaron.Router) {
-		r.Get("/create", token.Create)
-		r.Get("/update", token.Update)
-		r.Get("/auth", token.Auth)
+	m.Group("/token", func() {
+		m.Get("/create", token.Create)
+		m.Get("/update", token.Update)
+		m.Get("/auth", token.Auth)
 	})
 
-	m.Group("/account", func(r *macaron.Router) {
-		r.Get("/create", account.Create)
-		r.Get("/update", account.Update)
-		r.Get("/auth", account.Auth)
-		r.Get("/delete", account.Delete)
-		r.Get("/info", account.Info)
-		r.Get("/list", account.Accounts)
+	m.Group("/account", func() {
+		m.Post("/create", account.Create)
+		m.Get("/create/test", account.Create)
+		m.Get("/update", account.Update)
+		m.Get("/auth/test", account.Auth)
+		m.Post("/auth", account.Auth)
+		m.Get("/delete", account.Delete)
+		m.Get("/info/test", account.Info)
+		m.Post("/info", account.Info)
+		m.Get("/list", account.Accounts)
+	})
+
+	m.Group("/sso", func() {
+		m.Post("/auth", sso.Auth)
+		m.Get("/auth/test", sso.Auth)
+		m.Get("/list", sso.List)
+		m.Get("/client", sso.Client)
 	})
 
 	// m.NotFound(func(ctx *macaron.Context, logger *log.Logger) {

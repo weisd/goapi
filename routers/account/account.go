@@ -47,6 +47,7 @@ func Auth(ctx *middleware.Context) {
 	username := ctx.Query("username")
 	password := ctx.Query("password")
 	from := ctx.Query("from")
+	log.Info("post : %s %s %s", username, password, from)
 
 	if len(username) == 0 || len(password) == 0 || len(from) == 0 {
 		ctx.ErrorJSON(401, "params error")

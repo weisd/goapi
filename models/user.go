@@ -10,14 +10,15 @@ import (
 )
 
 type User struct {
-	Id       int64     `json:"id"`
-	Username string    `json:"username",xorm:"UNIQUE NOT NULL"`
-	Email    string    `json:"email",xorm:"UNIQUE NOT NULL"`
-	Phone    string    `json:"phone"`
-	Password string    `json:"_",xorm:"NOT NULL"`
-	Salt     string    `json:"_",xorm:"NOT NULL"`
-	Created  time.Time `json:"created",xorm:"CREATED"`
-	Updated  time.Time `json:"updated",xorm:"UPDATED"`
+	Id            int64     `json:"id"`
+	Username      string    `json:"username",xorm:"UNIQUE NOT NULL"`
+	Email         string    `json:"email",xorm:"UNIQUE NOT NULL"`
+	Phone         string    `json:"phone"`
+	Password      string    `json:"_",xorm:"NOT NULL"`
+	RememberToken string    `json:"remember_token"`
+	Salt          string    `json:"_",xorm:"NOT NULL"`
+	Created       time.Time `json:"created",xorm:"CREATED"`
+	Updated       time.Time `json:"updated",xorm:"UPDATED"`
 }
 
 // 创建用户
@@ -137,9 +138,9 @@ func UpdateUserInfo(uid int64, data map[string]interface{}) error {
 /**
  * 取用户列表
  */
-func GetUserList() (list []User, err error) {
+func GetUserList() (list []*User, err error) {
 
-	list = make([]User, 0)
+	list = make([]*User, 0)
 
 	err = x.Find(&list)
 	if err != nil {
